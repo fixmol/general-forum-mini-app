@@ -30,11 +30,13 @@
 
 
 <script>
+import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ref, reactive, watch } from 'vue'
 
 export default {
   setup() {
+    const store = useStore()
     const router = useRouter()
     const userName = ref('')
     const userEmail = ref('')
@@ -103,6 +105,7 @@ export default {
 
       const isValid = Object.keys(validFormElems).every(elem => validFormElems[elem] === true)
       if (isValid) {
+        localStorage.setItem('nameLogin', userName.value)
         router.push('/')
       }
     }
