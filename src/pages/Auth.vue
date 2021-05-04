@@ -5,7 +5,7 @@
 
       <div class="form-control">
         <label for="name">Отображаемое имя</label>
-        <input type="text" id="name" ref="nameRef" v-model="userName">
+        <input type="text" id="name" ref="nameRef" v-model="userName" v-focus>
         <small>{{ smallInfo.name }}</small>
       </div>
       <div class="form-control">
@@ -21,9 +21,10 @@
         <small>{{ smallInfo.pass }}</small>
       </div>
 
-      <button type="submit" class="btn primary"
+      <button type="submit" class="btn primary" :disabled="waitLogin"
         @click.prevent="toAuthEnter">
         Войти </button>
+      <small v-if="waitLogin">Слишком много попыток входа, немного подождите.</small>
     </form>
   </div>
 </template>
@@ -35,6 +36,14 @@ import { useRouter } from 'vue-router'
 import { ref, reactive, watch } from 'vue'
 
 export default {
+  directives: {
+    focus: {
+      mounted(elem) {
+        elem.focus()
+      }
+    }
+  },
+
   setup() {
     const store = useStore()
     const router = useRouter()
@@ -53,8 +62,12 @@ export default {
     })
 
     watch(userName, () => {
+      const validName = /^[a-zA-Z0-9._ ]+$/.test(userName.value)
       if (userName.value.length < 2) {
         smallInfo.name = 'Не менее 2 символов в имени'
+        validFormElems.isValidName = false
+      } else if (!validName) {
+        smallInfo.name = 'Недопустимые символы в имени'
         validFormElems.isValidName = false
       } else {
         smallInfo.name = ''
@@ -89,7 +102,19 @@ export default {
     const emailRef = ref(null)
     const passRef = ref(null)
 
+    const waitLogin = ref(false)
+    const tooManyTry = ref(0)
+
     function toAuthEnter() {
+      tooManyTry.value++
+      if (tooManyTry.value >= 6) {
+        waitLogin.value = true
+        setTimeout(() => {
+          waitLogin.value = false
+          tooManyTry.value = 0
+        }, 5000)
+      }
+
       if (userName.value === '') {
         nameRef.value.classList.add('warning-field')
         nameRef.value.placeholder = 'Поле не может быть пустым'
@@ -113,6 +138,7 @@ export default {
     return {
       userName, userEmail, userPass,
       nameRef, emailRef, passRef,
+      waitLogin,
       smallInfo,
       toAuthEnter,
     }
