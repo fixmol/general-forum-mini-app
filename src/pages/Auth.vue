@@ -60,7 +60,7 @@ export default {
       }
     })
     watch(userEmail, () => {
-      const validEmail = /^[a-zA-z-._]+@[a-z]+\.[a-z]{2,}$/.test(userEmail.value)
+      const validEmail = /^[a-zA-z0-9]+[-._]{0,1}[a-zA-z0-9]+@[a-z]+\.[a-z]{2,}$/.test(userEmail.value)
       if (!validEmail) {
         smallInfo.email = 'Некорректный email'
         validFormElems.isValidEmail = false
@@ -70,8 +70,12 @@ export default {
       }
     })
     watch(userPass, () => {
+      const validPass = /^[a-zA-Z0-9$]+$/.test(userPass.value)
       if (userPass.value.length < 6) {
         smallInfo.pass = 'Слишком короткий пароль'
+        validFormElems.isValidPass = false
+      } else if (!validPass) {
+        smallInfo.pass = 'Недопустимые символы в пароле'
         validFormElems.isValidPass = false
       } else {
         smallInfo.pass = ''
