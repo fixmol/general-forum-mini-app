@@ -130,7 +130,7 @@ export default {
 
       const isValid = Object.keys(validFormElems).every(elem => validFormElems[elem] === true)
       if (isValid) {
-        localStorage.setItem('nameLogin', userName.value)
+        localStorage.setItem('userName', userName.value)
         router.push('/')
       }
     }

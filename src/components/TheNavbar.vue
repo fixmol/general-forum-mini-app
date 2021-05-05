@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <h3>Forum Mini App</h3>
-    <p>Здравствуй, {{nameLogin}}</p>
+    <p>Здравствуй, {{userName}}</p>
 
     <ul class="navbar-menu">
       <li>
@@ -25,14 +25,12 @@ export default {
   setup() {
     const router = useRouter()
 
-    function toLogout() {
-      localStorage.removeItem('nameLogin')
-      router.push('/auth')
-    }
-
     return {
-      nameLogin: localStorage.getItem('nameLogin'),
-      toLogout
+      userName: localStorage.getItem('userName'),
+      toLogout: () => {
+        localStorage.removeItem('userName')
+        router.push('/auth')
+      },
     }
   }
 }
