@@ -9,12 +9,20 @@
       <div>{{post.textField}}</div>
     </div>
   </div>
+
   <div class="card">
     <label for="textarea">Введите текст для публикации</label>
     <textarea id="textarea" v-model="textField"></textarea>
-    <button class="btn primary" @click="toSend">Отправить</button>
+    <button class="btn primary"
+      @click="toSend">
+      Отправить
+    </button>
+    <button class="btn danger"
+      :disabled="!lastPostKey"
+      @click="toDeleteLastPost">
+      Удалить последнюю запись
+    </button>
   </div>
-
 </template>
 
 
@@ -26,6 +34,7 @@ export default {
   setup() {
     const posts = ref([])
     const textField = ref('')
+    const lastPostKey = ref('')
 
     // watch(textField, () => {
     //   console.log(textField.value)
@@ -34,6 +43,9 @@ export default {
     onMounted(async () => {
       const response = await axios.get('https://general-forum-mini-app-default-rtdb.europe-west1.firebasedatabase.app/postlist.json')
 
+      if (response.data === null) {
+        return posts.value = []
+      }
       const resultParse = Object.keys(response.data).map(elemKey => {
         return {
           id: elemKey,
@@ -53,15 +65,26 @@ export default {
           time: new Date().toLocaleString()
         }
         const url = 'https://general-forum-mini-app-default-rtdb.europe-west1.firebasedatabase.app/postlist.json'
-        await axios.post(url, postData)
+        const response = await axios.post(url, postData)
+        postData.id = response.data.name
         posts.value.push(postData)
         textField.value = ''
+        lastPostKey.value = response.data.name
       }
+    }
+
+    async function toDeleteLastPost() {
+      await axios.delete(`https://general-forum-mini-app-default-rtdb.europe-west1.firebasedatabase.app/postlist/${lastPostKey.value}.json`)
+      posts.value = posts.value.filter(elem => elem.id !== lastPostKey.value)
+      lastPostKey.value = ''
     }
 
     return {
       posts,
-      textField, toSend
+      textField,
+      lastPostKey,
+      toSend,
+      toDeleteLastPost
     }
   }
 }
