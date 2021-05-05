@@ -10,13 +10,7 @@ export default createStore({
 
   state() {
     return {
-      postsList: ['sdf', 'sdfsd', 'qvxc']
-    }
-  },
-
-  getters: {
-    postsList(state) {
-      return state.postsList
+      // postsList: []
     }
   }
 })
