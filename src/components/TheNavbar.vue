@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <h3>Forum Mini App</h3>
-    <p>Здравствуй, {{userName}}</p>
+    <p>Здравствуй, <span>{{userName}}</span></p>
 
     <ul class="navbar-menu">
       <li>
@@ -39,6 +39,10 @@ export default {
 
 <style scoped>
  .navbar h3 {
-   color: rgb(134, 18, 82);
+   color: rgb(129, 16, 78);
+ }
+ .navbar span {
+   font-weight: bold;
+   color: rgb(129, 16, 78);
  }
 </style>

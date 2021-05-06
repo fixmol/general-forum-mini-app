@@ -1,13 +1,13 @@
 <template>
   <AppLoader v-if="isShowLoading"/>
 
-  <div class="card" v-if="!posts.length">
+  <div class="card" v-if="!posts.length && !isShowLoading">
     <h3>Здесь пока пусто, оставьте запись первым!</h3>
   </div>
 
-  <div class="card post-list" v-else>
+  <div class="card post-list" v-scroll v-else>
     <div class="card" v-for="post in posts" :key="post.id">
-      <p>{{post.userName}} | {{post.time}}</p>
+      <p><span>{{post.userName}}</span> | {{post.time}}</p>
       <div>{{post.textField}}</div>
     </div>
   </div>
@@ -34,15 +34,28 @@ import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 
 export default {
+  directives: {
+    scroll: {
+      mounted(value) {
+        value.scrollTop = value.scrollHeight
+      },
+      updated(value) {
+        value.scrollTop = value.scrollHeight
+      }
+    }
+  },
+
   setup() {
     const posts = ref([])
     const textField = ref('')
     const lastPostKey = ref('')
     const isShowLoading = ref(false)
 
-    // watch(textField, () => {
-    //   console.log(textField.value)
-    // })
+    watch(isShowLoading, () => {
+      if (isShowLoading.value === true) {
+        document.body.style.overflow = 'hidden'
+      }
+    })
 
     onMounted(async () => {
       isShowLoading.value = true
@@ -119,5 +132,9 @@ export default {
     height: 500px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
+  }
+  .card.post-list span {
+    font-weight: bold;
+    color: rgb(129, 16, 78);
   }
 </style>
