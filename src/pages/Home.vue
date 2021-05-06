@@ -1,4 +1,6 @@
 <template>
+  <AppLoader v-if="isShowLoading"/>
+
   <div class="card" v-if="!posts.length">
     <h3>Здесь пока пусто, оставьте запись первым!</h3>
   </div>
@@ -27,6 +29,7 @@
 
 
 <script>
+import AppLoader from '../components/AppLoader'
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 
@@ -35,15 +38,18 @@ export default {
     const posts = ref([])
     const textField = ref('')
     const lastPostKey = ref('')
+    const isShowLoading = ref(false)
 
     // watch(textField, () => {
     //   console.log(textField.value)
     // })
 
     onMounted(async () => {
+      isShowLoading.value = true
       const response = await axios.get('https://general-forum-mini-app-default-rtdb.europe-west1.firebasedatabase.app/postlist.json')
 
       if (response.data === null) {
+        isShowLoading.value = false
         return posts.value = []
       }
       const resultParse = Object.keys(response.data).map(elemKey => {
@@ -55,6 +61,7 @@ export default {
         }
       })
       posts.value = resultParse
+      isShowLoading.value = false
     })
 
     async function toSend() {
@@ -84,8 +91,13 @@ export default {
       textField,
       lastPostKey,
       toSend,
-      toDeleteLastPost
+      toDeleteLastPost,
+      isShowLoading
     }
+  },
+
+  components: {
+    AppLoader
   }
 }
 </script>

@@ -35,3 +35,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+ .navbar h3 {
+   color: rgb(134, 18, 82);
+ }
+</style>
