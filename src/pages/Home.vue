@@ -5,20 +5,27 @@
     <h3>Здесь пока пусто, оставьте запись первым!</h3>
   </div>
 
-  <div class="card post-list" v-scroll v-else>
+  <div class="card post-list" v-if="posts.length && !isShowLoading" v-scroll>
     <div class="card" v-for="post in posts" :key="post.id">
       <p><span>{{post.userName}}</span> | {{post.time}}</p>
       <div>{{post.textField}}</div>
+      <img class="post-image" :src="post.urlImg" :alt="post.urlImg" v-if="post.urlImg">
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" v-if="!isShowLoading">
     <label for="textarea">Введите текст для публикации</label>
     <textarea id="textarea" v-model="textField"></textarea>
+
+    <label for="url-img">Вставьте URL ссылку картинки для добавления</label>
+    <input class="url-adress" id="url-img"
+      placeholder="URL картинки" v-model="urlImg">
+
     <button class="btn primary"
       @click="toSend">
       Отправить
     </button>
+
     <button class="btn danger"
       :disabled="!lastPostKey"
       @click="toDeleteLastPost">
@@ -38,9 +45,6 @@ export default {
     scroll: {
       mounted(value) {
         value.scrollTop = value.scrollHeight
-      },
-      updated(value) {
-        value.scrollTop = value.scrollHeight
       }
     }
   },
@@ -48,6 +52,7 @@ export default {
   setup() {
     const posts = ref([])
     const textField = ref('')
+    const urlImg = ref('')
     const lastPostKey = ref('')
     const isShowLoading = ref(false)
 
@@ -70,7 +75,8 @@ export default {
           id: elemKey,
           userName: response.data[elemKey].userName,
           textField: response.data[elemKey].textField,
-          time: response.data[elemKey].time
+          time: response.data[elemKey].time,
+          urlImg: response.data[elemKey].urlImg
         }
       })
       posts.value = resultParse
@@ -82,14 +88,19 @@ export default {
         const postData = {
           userName: localStorage.getItem('userName'),
           textField: textField.value,
-          time: new Date().toLocaleString()
+          time: new Date().toLocaleString(),
+          urlImg: urlImg.value ? urlImg.value : null
         }
         const url = 'https://general-forum-mini-app-default-rtdb.europe-west1.firebasedatabase.app/postlist.json'
         const response = await axios.post(url, postData)
         postData.id = response.data.name
         posts.value.push(postData)
         textField.value = ''
+        urlImg.value = ''
         lastPostKey.value = response.data.name
+
+        let divScroll = await document.querySelector('.post-list')
+        divScroll.scrollTop = divScroll.scrollHeight
       }
     }
 
@@ -102,6 +113,7 @@ export default {
     return {
       posts,
       textField,
+      urlImg,
       lastPostKey,
       toSend,
       toDeleteLastPost,
@@ -123,6 +135,7 @@ export default {
     width: 100%;
     height: 80px;
     margin-top: .5rem;
+    margin-bottom: .5rem;
     padding: .2rem .5rem;
     font-size: 16px;
   }
@@ -136,5 +149,15 @@ export default {
   .card.post-list span {
     font-weight: bold;
     color: rgb(129, 16, 78);
+  }
+  .url-adress {
+    display: block;
+    margin-top: .5rem;
+    padding: .5rem .5rem;
+    width: 100%;
+  }
+  .post-image {
+    margin-top: .2rem;
+    width: 300px;
   }
 </style>
