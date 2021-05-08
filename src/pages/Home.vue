@@ -7,19 +7,23 @@
 
   <div class="card post-list" v-if="posts.length && !isShowLoading" v-scroll>
     <div class="card" v-for="post in posts" :key="post.id">
-      <p><span>{{post.userName}}</span> | {{post.time}}</p>
+      <p>
+        <span class="post-username">{{post.userName}}</span>
+        |
+        <span class="post-time">{{post.time}}</span>
+      </p>
       <div>{{post.textField}}</div>
       <img class="post-image" :src="post.urlImg" :alt="post.urlImg" v-if="post.urlImg">
     </div>
   </div>
 
-  <div class="card" v-if="!isShowLoading">
+  <div class="card send-message" v-if="!isShowLoading">
     <label for="textarea">Введите текст для публикации</label>
-    <textarea id="textarea" v-model="textField"></textarea>
+    <textarea id="textarea" placeholder="Напишите сообщение.." v-model="textField"></textarea>
 
     <label for="url-img">Вставьте URL ссылку картинки для добавления</label>
     <input class="url-adress" id="url-img"
-      placeholder="URL картинки" v-model="urlImg">
+      placeholder=". . ." v-model="urlImg">
 
     <button class="btn primary"
       @click="toSend">
@@ -129,6 +133,10 @@ export default {
 
 
 <style scoped>
+  .card.send-message {
+    background: rgb(223, 223, 223);
+    box-shadow: 0px 15px 25px 10px rgba(0, 0, 0, 0.61);
+  }
   .card textarea {
     display: block;
     resize: none;
@@ -140,15 +148,19 @@ export default {
     font-size: 16px;
   }
   .card.post-list {
-    background: rgba(131, 131, 131, 0.719);
-    background: rgb(192, 192, 192);
+    background: rgba(56, 56, 56, 0.575);
     height: 500px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
+    box-shadow: 0px 0px 15px 10px rgba(0, 0, 0, 0.61);
   }
-  .card.post-list span {
+  .post-username {
     font-weight: bold;
     color: rgb(129, 16, 78);
+  }
+  .post-time {
+    font-size: 14px;
+    font-weight: bold;
   }
   .url-adress {
     display: block;
