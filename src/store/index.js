@@ -10,7 +10,20 @@ export default createStore({
 
   state() {
     return {
-      // postsList: []
+      postsListToSearch: []
+    }
+  },
+
+  mutations: {
+    searchItem(state, payload) {
+      console.log(payload.value)
+      console.log(state.postsListToSearch)
+    }
+  },
+
+  getters: {
+    postsListToSearch(state) {
+      return state.postsListToSearch
     }
   }
 })

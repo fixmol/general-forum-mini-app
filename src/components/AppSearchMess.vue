@@ -1,12 +1,26 @@
 <template>
-  <input placeholder="Поиск сообщения">
-  <button class="search">Найти</button>
+  <input placeholder="Поиск сообщения" v-model="messageSearch">
+  <button class="search" @click="toSearch">Найти</button>
 </template>
 
 
 <script>
+import { useStore } from 'vuex'
+import { ref } from 'vue'
+
 export default {
-  
+  setup() {
+    const store = useStore()
+    const messageSearch = ref('')
+
+    function toSearch() {
+      store.commit('searchItem', messageSearch)
+    }
+
+    return {
+      messageSearch, toSearch
+    }
+  }
 }
 </script>
 

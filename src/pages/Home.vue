@@ -41,6 +41,7 @@
 
 <script>
 import AppLoader from '../components/AppLoader'
+import { useStore } from 'vuex'
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 
@@ -54,6 +55,7 @@ export default {
   },
 
   setup() {
+    const store = useStore()
     const posts = ref([])
     const textField = ref('')
     const urlImg = ref('')
@@ -84,6 +86,7 @@ export default {
         }
       })
       posts.value = resultParse
+      store.state.postsListToSearch = resultParse
       isShowLoading.value = false
     })
 
