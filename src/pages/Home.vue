@@ -119,15 +119,24 @@ export default {
     }
 
     function searchElem(messageSearch) {
-      let regexp = new RegExp(messageSearch)
-      posts.value.forEach(post => {
-        if (regexp.test(post.textField)) {
-          let indexPost = posts.value.findIndex(elem => elem === post)
-          let domPost = document.querySelector('.post-list').children[indexPost]
+      if (messageSearch) {
 
-          console.log(domPost)
-        }
-      })
+        let regexp = new RegExp(messageSearch)
+        posts.value.forEach(post => {
+          if (regexp.test(post.textField) === true) {
+            let indexPost = posts.value.findIndex(elem => elem === post)
+            let domPosts = document.querySelector('.post-list')
+            let findedElem = domPosts.children[indexPost]
+
+            domPosts.scrollTop = findedElem.offsetTop - 120
+            findedElem.style.background = '#d1ffca'
+
+            setTimeout(() => {
+              findedElem.style.background = 'white'
+            }, 1500)
+          }
+        })
+      }
     }
 
     return {
