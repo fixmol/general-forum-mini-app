@@ -3,10 +3,6 @@
     <h3>Forum Mini App</h3>
     <p>Здравствуй, <span>{{userName}}</span></p>
 
-    <div>
-      <AppSearchMess />
-    </div>
-
     <ul class="navbar-menu">
       <li>
         <router-link to="/">Главная</router-link>
@@ -23,7 +19,6 @@
 
 
 <script>
-import AppSearchMess from './AppSearchMess'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -35,12 +30,8 @@ export default {
       toLogout: () => {
         localStorage.removeItem('userName')
         router.push('/auth')
-      },
+      }
     }
-  },
-  
-  components: {
-    AppSearchMess
   }
 }
 </script>

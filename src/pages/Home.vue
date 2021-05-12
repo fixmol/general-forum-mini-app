@@ -5,6 +5,9 @@
     <h3>Здесь пока пусто, оставьте запись первым!</h3>
   </div>
 
+  <AppSearchMess
+    @search-elem="searchElem"/>
+
   <div class="card post-list" v-if="posts.length && !isShowLoading" v-scroll>
     <div class="card" v-for="post in posts" :key="post.id">
       <p>
@@ -41,7 +44,7 @@
 
 <script>
 import AppLoader from '../components/AppLoader'
-import { useStore } from 'vuex'
+import AppSearchMess from '../components/AppSearchMess'
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 
@@ -55,7 +58,6 @@ export default {
   },
 
   setup() {
-    const store = useStore()
     const posts = ref([])
     const textField = ref('')
     const urlImg = ref('')
@@ -86,7 +88,6 @@ export default {
         }
       })
       posts.value = resultParse
-      store.state.postsListToSearch = resultParse
       isShowLoading.value = false
     })
 
@@ -117,6 +118,18 @@ export default {
       lastPostKey.value = ''
     }
 
+    function searchElem(messageSearch) {
+      let regexp = new RegExp(messageSearch)
+      posts.value.forEach(post => {
+        if (regexp.test(post.textField)) {
+          let indexPost = posts.value.findIndex(elem => elem === post)
+          let domPost = document.querySelector('.post-list').children[indexPost]
+
+          console.log(domPost)
+        }
+      })
+    }
+
     return {
       posts,
       textField,
@@ -124,12 +137,13 @@ export default {
       lastPostKey,
       toSend,
       toDeleteLastPost,
-      isShowLoading
+      isShowLoading,
+      searchElem
     }
   },
 
   components: {
-    AppLoader
+    AppLoader, AppSearchMess
   }
 }
 </script>
@@ -155,7 +169,7 @@ export default {
     height: 500px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
-    box-shadow: 0px 0px 15px 10px rgba(0, 0, 0, 0.61);
+    box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.61);
   }
   .post-username {
     font-weight: bold;
