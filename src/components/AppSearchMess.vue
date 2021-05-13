@@ -1,5 +1,7 @@
 <template>
-  <input placeholder="Поиск сообщения" v-model="messageSearch">
+  <input placeholder="Поиск сообщения"
+    v-model="messageSearch"
+    @keypress.enter="toSearch">
   <button class="search" @click="toSearch">&#128269;</button>
 </template>
 

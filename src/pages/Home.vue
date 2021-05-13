@@ -5,7 +5,7 @@
     <h3>Здесь пока пусто, оставьте запись первым!</h3>
   </div>
 
-  <AppSearchMess
+  <AppSearchMess v-if="!isShowLoading"
     @search-elem="searchElem"/>
 
   <div class="card post-list" v-if="posts.length && !isShowLoading" v-scroll>
@@ -121,9 +121,10 @@ export default {
     function searchElem(messageSearch) {
       if (messageSearch) {
 
-        let regexp = new RegExp(messageSearch)
+        let regexpStart = new RegExp('^' + messageSearch)
+        let regexpEnd = new RegExp(messageSearch + '$')
         posts.value.forEach(post => {
-          if (regexp.test(post.textField) === true) {
+          if (regexpStart.test(post.textField) || regexpEnd.test(post.textField)) {
             let indexPost = posts.value.findIndex(elem => elem === post)
             let domPosts = document.querySelector('.post-list')
             let findedElem = domPosts.children[indexPost]
